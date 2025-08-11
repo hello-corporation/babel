@@ -3,7 +3,7 @@ WARNINGS    := -Wall
 PY_INCLUDE  := $(shell python -c "import sysconfig; print(sysconfig.get_path('include'))")
 PY_VERSION  := $(shell python -c "import sysconfig; print(sysconfig.get_python_version())")
 INTERPRETER := $(shell readelf -l /bin/sh | grep "Requesting program interpreter" | grep -Eo '/[^]]*')
-C_RUNTIME   := $(shell echo /usr/lib64/crt{1,i,n}.o)
+C_RUNTIME   := $(shell gcc -print-file-name=crt1.o; gcc -print-file-name=crti.o; gcc -print-file-name=crtn.o)
 BUILDDIR    := $(PWD)
 LIBS        := -lc2 -lrust -lasm -lcython -lc
 SRC         := src
@@ -36,7 +36,7 @@ asm:
 cython:
 	cythonize -3 $(SRC)/cython3.pyx
 	mv -v $(SRC)/cython3.{c,h} $(O)/
-	gcc $(WARNINGS) -shared -I$(O) -I$(PY_INCLUDE) -fPIC -o $(L)/libcython.so $(O)/cython3.c -lpython$(PY_VERSION)
+	gcc $(WARNINGS) -shared -I$(O) -I$(PY_INCLUDE) -L $(shell python -c "import sys; print(sys.prefix)")/lib -fPIC -o $(L)/libcython.so $(O)/cython3.c -lpython$(PY_VERSION)
 
 main:
 	gcc $(WARNINGS) -c -o $(O)/main.o $(SRC)/main.c
