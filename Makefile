@@ -20,7 +20,6 @@ endif
 default: init c rust asm cython main link
 
 init:
-	@echo gen.sys --offset 11:1
 	@mkdir -p $(O) $(L) $(C)
 
 c:
@@ -57,6 +56,3 @@ develop: default install
 
 clean:
 	rm -rf $(O) $(E)
-
-check:
-	pytest -v tests
