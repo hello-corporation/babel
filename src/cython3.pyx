@@ -1,4 +1,3 @@
-from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
 cdef int cython_function(int x):
